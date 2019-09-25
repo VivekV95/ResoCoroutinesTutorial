@@ -1,9 +1,7 @@
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 fun main(args: Array<String>) {
-    exampleBlocking()
+    exampleLaunchGlobal()
 }
 
 suspend fun printlnDelayed(message: String) {
@@ -20,6 +18,21 @@ fun exampleBlocking() = runBlocking {
 
 fun exampleBlockingDispatcher() {
     runBlocking(Dispatchers.Default) {
-        println("one - from thread ")
+        println("one - from thread ${Thread.currentThread().name}")
+        printlnDelayed("two - from thread ${Thread.currentThread().name}")
     }
+    println("three - from thread ${Thread.currentThread().name}")
 }
+
+fun exampleLaunchGlobal() = runBlocking {
+    println("one - from thread ${Thread.currentThread().name}")
+
+    GlobalScope.launch {
+        printlnDelayed("two - from thread ${Thread.currentThread().name}")
+    }
+
+    println("three - from thread ${Thread.currentThread().name}")
+    delay(3000)
+}
+
+
